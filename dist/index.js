@@ -58,7 +58,7 @@ async function run() {
     const pageName = core.getInput('page_name', {required: false});
     const pageId = core.getInput('page_id', {required: false});
     const editText = core.getInput('wiki_text', {required: true});
-    const editMessage = core.getInput('editSummary', {required: true});
+    const editMessage = core.getInput('edit_summary', {required: true});
     const toAppend = core.getInput('append', {required: false});
     const isMinor = core.getInput('minor', {required: false});
 
