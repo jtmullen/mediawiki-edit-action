@@ -83,8 +83,6 @@ async function run() {
 
     retval = await bot.edit(toEdit, rev => {
 
-      editParams.text = rev.content;
-
       return editParams;
 
     });
