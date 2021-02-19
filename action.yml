@@ -1,13 +1,41 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'MediaWiki Edit Action'
+author: 'jtmullen'
+description: 'Edit a page on a MediaWiki Wiki'
+branding:
+  icon: 'edit'
+  color: 'yellow'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  wiki_text:
+    descripton: "The content for the page"
     required: true
-    default: '1000'
-outputs:
-  time: # output will be available to future steps
-    description: 'The message to output'
+  edit_summary: 
+    description: "Summary of changes to be associated with this edit"
+    required: true
+  page_id:
+    description: "The Page ID to edit, must include this or page_name"
+    required: false
+  page_name:
+    description: "The name of the page to edit"
+    required: false
+  api_url:
+    description: "The URL for the API of the wiki to edit"
+    required: true
+  username:
+    description: "Username to log in with, should be a bot username"
+    required: true
+  password: 
+    description: "Login Password for above username"
+    required: true
+  user_agent: 
+    description: "Custom User Agent"
+    required: false
+  append:
+    description: "Include this input to append the changes"
+    required: false
+  minor:
+    description: "Include this input to mark the edit as minor"
+    required: false
+
 runs:
-  using: 'node12'
+  using: 'node14'
   main: 'dist/index.js'

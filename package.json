@@ -11,21 +11,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git+https://github.com/jtmullen/mediawiki-edit-action.git"
   },
   "keywords": [
     "GitHub",
     "Actions",
-    "JavaScript"
+    "MediaWiki"
   ],
-  "author": "",
+  "author": "@jtmullen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
+    "url": "https://github.com/jtmullen/mediawiki-edit-action/issues"
   },
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "homepage": "https://github.com/jtmullen/mediawiki-edit-action#readme",
   "dependencies": {
-    "@actions/core": "^1.2.5"
+    "@actions/core": "^1.2.5",
+    "@actions/github": "^4.0.0",
+    "mwn": "file:mwn"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.27.0",
