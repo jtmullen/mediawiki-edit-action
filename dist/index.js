@@ -26,7 +26,7 @@ async function run() {
     const pageName = core.getInput('page_name', {required: false});
     const pageId = core.getInput('page_id', {required: false});
     const inputText = core.getInput('wiki_text', {required: false});
-    const inputFile = core.getInput('wiki_test_file', {required: false});
+    const inputFile = core.getInput('wiki_text_file', {required: false});
     const editMessage = core.getInput('edit_summary', {required: true});
     const toAppend = core.getInput('append', {required: false});
     const isMinor = core.getInput('minor', {required: false});
