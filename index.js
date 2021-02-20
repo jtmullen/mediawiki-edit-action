@@ -28,8 +28,8 @@ async function run() {
       throw Error ("No Page Name or Page ID Specified");
     }
 
-    if(!editText && !editFile){
-      throw Error ("No Edit Text or File Specified");
+    if(!inputText && !inputFile){
+      throw Error ("No Text or File Specified");
     }
 
     //Create User Agent
