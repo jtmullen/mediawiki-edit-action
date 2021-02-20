@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const wait = require('./wait');
 const {mwn} = require('mwn');
+const fs = require('fs');
 
 
 async function run() {
@@ -18,7 +18,8 @@ async function run() {
     agent = core.getInput('user_agent)', {required: false});
     const pageName = core.getInput('page_name', {required: false});
     const pageId = core.getInput('page_id', {required: false});
-    const editText = core.getInput('wiki_text', {required: true});
+    const inputText = core.getInput('wiki_text', {required: false});
+    const inputFile = core.getInput('wiki_test_file', {required: false});
     const editMessage = core.getInput('edit_summary', {required: true});
     const toAppend = core.getInput('append', {required: false});
     const isMinor = core.getInput('minor', {required: false});
@@ -27,11 +28,15 @@ async function run() {
       throw Error ("No Page Name or Page ID Specified");
     }
 
+    if(!editText && !editFile){
+      throw Error ("No Edit Text or File Specified");
+    }
+
     //Create User Agent
     if(!agent){
       agent = "action";
     }
-    agent = context.workflow + "-" + context.runId + "-" + agent;
+    agent = context.repository + "-" + context.workflow + "-" + context.runId + "-bot-" + agent;
     core.debug("Using User Agent: " + agent);
 
     //Log In
@@ -60,6 +65,13 @@ async function run() {
       toEdit = pageName;
     }else{
       toEdit = pageId;
+    }
+
+    //choose where to get page text from
+    if(!inputFile){
+      editText = inputText;
+    }else{
+      editText = fs.readFileSync(inputFile, 'utf8');
     }
 
     editParams = {
