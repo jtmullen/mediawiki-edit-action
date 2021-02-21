@@ -13,7 +13,7 @@ const fs = __nccwpck_require__(5747);
 
 async function run() {
   try {
-    core.info("Media Wiki Edit Action v0.1.0");
+    core.info("Media Wiki Edit Action v0.1.1");
     const context = github.context;
     core.debug("Context:")
     core.debug(context);
@@ -29,6 +29,7 @@ async function run() {
     const inputFile = core.getInput('wiki_text_file', {required: false});
     const editMessage = core.getInput('edit_summary', {required: true});
     const toAppend = core.getInput('append', {required: false});
+    const toPrepend = core.getInput('prepend', {required: false});
     const isMinor = core.getInput('minor', {required: false});
 
     if(!pageName && !pageId){
@@ -39,11 +40,15 @@ async function run() {
       throw Error ("No Text or File Specified");
     }
 
+    if(toAppend && toPrepend){
+      core.warning("Both Prepend and Append Specified, will append")
+    }
+
     //Create User Agent
     if(!agent){
       agent = "action";
     }
-    agent = context.repository + "-" + context.workflow + "-" + context.runId + "-bot-" + agent;
+    agent = context.repository.full_name + "-" + context.workflow + "-" + context.runId + "-bot-" + agent;
     core.debug("Using User Agent: " + agent);
 
     //Log In
@@ -84,8 +89,13 @@ async function run() {
     editParams = {
       bot: true
     };
+
     if(!toAppend){
-      editParams.text = editText;
+      if(!toPrepend){
+        editParams.text = editText;
+      }else{
+        editParams.prependtext = editText;
+      }
     }else{
       editParams.appendtext = editText;
     }

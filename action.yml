@@ -6,8 +6,11 @@ branding:
   color: 'yellow'
 inputs:
   wiki_text:
-    descripton: "The content for the page"
-    required: true
+    descripton: "The content for the page, must include this or file"
+    required: false
+  wiki_text_file:
+    description: "A file with the wiki text for the edit, path relative to GitHub Workspace"
+    required: false
   edit_summary: 
     description: "Summary of changes to be associated with this edit"
     required: true
@@ -30,8 +33,10 @@ inputs:
     description: "Custom User Agent"
     required: false
   append:
-    description: "Include this input to append the changes"
+    description: "Include this input to append the specified text"
     required: false
+  prepend:
+    description: "Include this input to prepend the specified text"
   minor:
     description: "Include this input to mark the edit as minor"
     required: false
