@@ -41,7 +41,7 @@ async function run() {
     if(!agent){
       agent = "action";
     }
-    agent = context.repository.full_name + "-" + context.workflow + "-" + context.runId + "-bot-" + agent;
+    agent = context.payload.repository.full_name + "-" + context.workflow + "-" + context.runId + "-bot-" + agent;
     core.debug("Using User Agent: " + agent);
 
     //Log In
