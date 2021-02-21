@@ -78,7 +78,7 @@ async function run() {
     if(!inputFile){
       editText = inputText;
     }else{
-      editText = fs.readFileSync(inputFile, 'utf8');
+      editText = fs.readFileSync(process.env.GITHUB_WORKSPACE + inputFile, 'utf8');
     }
 
     editParams = {
