@@ -1,116 +1,94 @@
-# Create a JavaScript Action
+# mediawiki-edit-action
 
-<p align="center">
-  <a href="https://github.com/actions/javascript-action/actions"><img alt="javscript-action status" src="https://github.com/actions/javascript-action/workflows/units-test/badge.svg"></a>
-</p>
+A [github action](https://help.github.com/en/actions) to edit a page on a MediaWiki wiki. 
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
+This action is flexible for use in Workflows on any trigger - push, pull request, release, cron, etc. It can be used on it's own, such as adding new release info to a page - which is available in the context, or with custom workflow steps that generate the wiki text from content. 
 
-This template includes tests, linting, a validation workflow, publishing, and versioning guidance.
+*Please make sure all usage of this action follow the bot guidelines for the wiki you are editing. All edits with this action are marked as bot edits.*
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+## Inputs
+### Wiki & Login Information
+#### `api_url`
+The url of the API Endpoint for the MediaWiki wiki you are editing. See [MediaWiki API documentation](https://www.mediawiki.org/wiki/API:Main_page).
 
-## Create an action from this template
+#### `username`
+The username to login with. This action requires all edits be made by a logged in user. Typically this is a bot specific account or the username associated with a [bot password](https://www.mediawiki.org/wiki/Manual:Bot_passwords)
 
-Click the `Use this Template` and provide the new repo details for your action
+#### `password`
+The password to login with. For security reasons this should be stored in a [GitHub Secret](https://docs.github.com/en/actions/reference/encrypted-secrets)
 
-## Code in Main
+#### `user_agent`
+*Optional* Custom User Agent to Append. In line with the [MediaWiki User Agent Policy](https://meta.wikimedia.org/wiki/User-Agent_policy) there is a required default user agent, this input will be appended to the default user agent in the following pattern: `[user or org name]/[repo name]-[workflow name]-[run ID]-bot-[your user agent appended here]`
 
-Install the dependencies
 
-```bash
-npm install
+### Edit Information
+#### `page_name`
+The name of the page to edit. Only one of page name or id is required. 
+
+#### `page_id`
+The ID of the page to edit. Only one of page name or id is required, if both are specified id will take preference. 
+
+#### `wiki_text`
+Use this input to directly pass in the wiki text for your edit. Only one of `wiki_text` or `wiki_text_file` is required. 
+
+#### `wiki_text_file`
+The path to a file with tthe wiki text to use for this edit. This will override `wiki_text` if both are specified. The path should be relative to the [GitHub Workspace](https://docs.github.com/en/actions/reference/environment-variables). The file should be utf-8 encoded. 
+
+#### `edit_summary`
+Summary of what is being changed for the [MediaWiki Edit Summary](https://meta.wikimedia.org/wiki/Help:Edit_summary)
+
+#### `append`
+Include this input to append your changes to the page instead of replacing the existing content. 
+
+#### `prepend`
+Include this input to prepend your changes to the page instead of replacing the existing content. Append takes priority over prepend if both are specified. 
+
+#### `minor`
+Include this input to mark the edit as a [minor edit](https://meta.wikimedia.org/wiki/Help:Minor_edit). 
+
+## Outputs
+None
+
+## Example Usage
+
+To add to a repo create a [workflow file](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions) (such as `.github/workflows/edit-wiki.yml`). The following is an example of a workflow that appends a file from a repo as a minor change on pushes to main.
+
+```yml
+name: Edit-Wiki-Page
+
+on:
+  push:
+    branches:
+      - main
+
+jobs: 
+  append-file:
+    name: Append File To Wiki Page
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Edit Wiki Page
+      uses: jtmullen/mediawiki-edit-action@v0
+      with: 
+        wiki_text_file: "path/to/file.txt"
+        edit_summary: "Append Latest Update to File.txt"
+        page_name: "Test Page"
+        api_url: "https://www.example.com/w/api.php"
+        username: "User@bot-name"
+        password: ${{ secrets.WIKI_PASSWORD }}
+        append: true
+        minor: true
+
 ```
 
-Run the tests :heavy_check_mark:
 
-```bash
-$ npm test
+## Potential Future Additions
+*Things I am considering adding, if any of these are of use to you please open an issue about it!*
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
-...
-```
+- Multiple Page Editing
+- More inputs from file(s)
+- Tags
+- Create/Create Only/Recreate
+- Additional Content Formats
 
-## Change action.yml
-
-The action.yml defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-const core = require('@actions/core');
-...
-
-async function run() {
-  try {
-      ...
-  }
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Package for distribution
-
-GitHub Actions will run the entry point from the action.yml. Packaging assembles the code into one file that can be checked in to Git, enabling fast and reliable execution and preventing the need to check in node_modules.
-
-Actions are run from GitHub repos.  Packaging the action will create a packaged action in the dist folder.
-
-Run prepare
-
-```bash
-npm run prepare
-```
-
-Since the packaged index.js is run from the dist folder.
-
-```bash
-git add dist
-```
-
-## Create a release branch
-
-Users shouldn't consume the action from master since that would be latest code and actions can break compatibility between major versions.
-
-Checkin to the v1 release branch
-
-```bash
-git checkout -b v1
-git commit -a -m "v1 release"
-```
-
-```bash
-git push origin v1
-```
-
-Note: We recommend using the `--license` option for ncc, which will create a license file for all of the production node modules used in your project.
-
-Your action is now published! :rocket:
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Usage
-
-You can now consume the action by referencing the v1 branch
-
-```yaml
-uses: actions/javascript-action@v1
-with:
-  milliseconds: 1000
-```
-
-See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:
