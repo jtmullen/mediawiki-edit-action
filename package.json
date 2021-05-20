@@ -27,7 +27,8 @@
   "dependencies": {
     "@actions/core": "^1.2.5",
     "@actions/github": "^4.0.0",
-    "mwn": "^0.10.0"
+    "mwn": "^0.10.0",
+    "update": "^0.4.2"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.27.0",
